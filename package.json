@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "author": "kaky0922@gmail.com",
-  "description": "Mikoto controll the air conditioner in sakai's apartment",
+  "description": "Mikoto control the air conditioner in sakai's apartment",
   "dependencies": {
     "hubot": "^2.11.0",
     "hubot-auth": "^1.2.0",
