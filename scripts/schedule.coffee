@@ -33,11 +33,11 @@ scheduleSignal = (hour, minute, order, msg) ->
             console.log stdout + stderr
 
 module.exports = (robot) ->
-    robot.hear /^([0-9]+):([0-9]+)に(オフ|暖房オン|冷房オン)$/i, (msg) ->
+    robot.hear /^([0-9]+):([0-9]+)(| |　|に)(オフ|暖房オン|冷房オン)$/i, (msg) ->
         if robot.auth.isAdmin(msg.envelope.user)
             hour = parseInt(msg.match[1], 10)
             minute = parseInt(msg.match[2], 10)
-            order = msg.match[3]
+            order = msg.match[4]
             if (0 <= hour <= 23 && 0 <= minute <= 59)
                 scheduleSignal(hour, minute, order, msg)
                 msg.send msg.random ['分かったわー', '了解！']
