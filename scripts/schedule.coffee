@@ -2,7 +2,7 @@
 #   shedule controling air conditioner
 
 {exec} = require 'child_process'
-schedule = require 'node-schedule'
+at = require 'node-at'
 
 unauth_msg = 'この操作は酒井にしか許されてないの＞＜'
 
@@ -18,30 +18,21 @@ msg_table =
 
 
 
-scheduleSignal = (hour, minute, order, msg) ->
-    if not (0 <= hour <= 23 && 0 <= minute <= 59)
-        throw new Error('invalid date')
+scheduleSignal = (date_str, order, msg) ->
     command = "irsend SEND_ONCE sakai-air #{cmd_table[order]}"
-    now = new Date
-    date = new Date
-    date.setHours(hour, minute, 0, 0)
-    #既にその時刻を過ぎていた場合は、1日足す
-    date.setTime(date.getTime() + 24 * 60 * 60 * 1000) if date < now
-    console.log date
-    job = schedule.scheduleJob date, ->
+    job = at.schedule date_str, ->
         exec command, (err, stdout, stderr) ->
             throw err if err
             msg.send msg.random msg_table[order]
             console.log stdout + stderr
 
 module.exports = (robot) ->
-    robot.hear /^([0-9]+):([0-9]+)(| |　|に)(オフ|暖房オン|冷房オン)$/i, (msg) ->
+    robot.hear /^([0-9]+:[0-9]+)(| |　|に)(オフ|暖房オン|冷房オン)$/i, (msg) ->
         if robot.auth.isAdmin(msg.envelope.user)
-            hour = parseInt(msg.match[1], 10)
-            minute = parseInt(msg.match[2], 10)
-            order = msg.match[4]
+            date_str = msg.match[1]
+            order = msg.match[3]
             try
-                scheduleSignal(hour, minute, order, msg)
+                scheduleSignal(date_str, order, msg)
                 msg.send msg.random ['分かったわー', '了解！']
             catch err
                 console.log err.message

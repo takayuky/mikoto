@@ -19,7 +19,7 @@
     "hubot-shipit": "^0.1.1",
     "hubot-slack": "^3.2.1",
     "hubot-youtube": "^0.1.2",
-    "node-schedule": "^0.1.16"
+    "node-at": "0.0.1"
   },
   "engines": {
     "node": "0.10.x"
