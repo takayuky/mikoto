@@ -19,6 +19,8 @@ msg_table =
 
 
 scheduleSignal = (hour, minute, order, msg) ->
+    if not (0 <= hour <= 23 && 0 <= minute <= 59)
+        throw new Error('invalid date')
     command = "irsend SEND_ONCE sakai-air #{cmd_table[order]}"
     now = new Date
     date = new Date
@@ -38,11 +40,11 @@ module.exports = (robot) ->
             hour = parseInt(msg.match[1], 10)
             minute = parseInt(msg.match[2], 10)
             order = msg.match[4]
-            if (0 <= hour <= 23 && 0 <= minute <= 59)
+            try
                 scheduleSignal(hour, minute, order, msg)
                 msg.send msg.random ['分かったわー', '了解！']
-            else
-                console.log 'invalid date'
+            catch err
+                console.log err.message
                 msg.send '日付がおかしい気がするわね...'
         else
             msg.send unauth_msg
